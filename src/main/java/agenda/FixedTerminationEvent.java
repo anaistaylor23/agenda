@@ -13,6 +13,7 @@ public class FixedTerminationEvent extends RepetitiveEvent {
 
     private LocalDate terminationInclusive;
     private long numberOfOccurrences;
+
     /**
      * Constructs a fixed terminationInclusive event ending at a given date
      *
@@ -28,8 +29,9 @@ public class FixedTerminationEvent extends RepetitiveEvent {
      * @param terminationInclusive the date when this event ends
      */
     public FixedTerminationEvent(String title, LocalDateTime start, Duration duration, ChronoUnit frequency, LocalDate terminationInclusive) {
-         super(title, start, duration, frequency);
+        super(title, start, duration, frequency);
         this.terminationInclusive = terminationInclusive;
+        this.numberOfOccurrences = this.getStart().toLocalDate().until(terminationInclusive, frequency) + 1;
 
     }
 
@@ -45,11 +47,13 @@ public class FixedTerminationEvent extends RepetitiveEvent {
      * <LI>ChronoUnit.WEEKS for weekly repetitions</LI>
      * <LI>ChronoUnit.MONTHS for monthly repetitions</LI>
      * </UL>
-     * @param numberOfOccurrences the number of occurrences of this repetitive event
+     * @param numberOfOccurrences the number of occurrences of this repetitive
+     * event
      */
     public FixedTerminationEvent(String title, LocalDateTime start, Duration duration, ChronoUnit frequency, long numberOfOccurrences) {
         super(title, start, duration, frequency);
         this.numberOfOccurrences = numberOfOccurrences;
+        this.terminationInclusive = calculerTerminationInclusive();
     }
 
     /**
@@ -57,11 +61,26 @@ public class FixedTerminationEvent extends RepetitiveEvent {
      * @return the termination date of this repetitive event
      */
     public LocalDate getTerminationDate() {
-        return terminationInclusive;   
+        return terminationInclusive;
     }
 
     public long getNumberOfOccurrences() {
         return numberOfOccurrences;
     }
-        
+
+    public LocalDate calculerTerminationInclusive() {
+        LocalDate ret = this.getStart().toLocalDate();
+        if (frequency == ChronoUnit.DAYS) {
+            ret = this.getStart().plus(this.getNumberOfOccurrences() - 1, ChronoUnit.DAYS).toLocalDate();
+        }
+        if (frequency == ChronoUnit.WEEKS) {
+            ret = this.getStart().plus(this.getNumberOfOccurrences() - 1, ChronoUnit.WEEKS).toLocalDate();
+        }
+        if (frequency == ChronoUnit.MONTHS) {
+            ret = this.getStart().plus(this.getNumberOfOccurrences() - 1, ChronoUnit.MONTHS).toLocalDate();
+        }
+        return ret;
+
+    }
+
 }

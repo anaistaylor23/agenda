@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
  * Description : A repetitive Event
  */
 public class RepetitiveEvent extends Event {
+
     /**
      * Constructs a repetitive event
      *
@@ -21,9 +22,9 @@ public class RepetitiveEvent extends Event {
      * <LI>ChronoUnit.MONTHS for monthly repetitions</LI>
      * </UL>
      */
-    private ChronoUnit frequency;
+    protected ChronoUnit frequency;
     private List<LocalDate> lesExceptions = new ArrayList<>();
-    
+
     public RepetitiveEvent(String title, LocalDateTime start, Duration duration, ChronoUnit frequency) {
         super(title, start, duration);
         this.frequency = frequency;
@@ -34,7 +35,7 @@ public class RepetitiveEvent extends Event {
      *
      * @param date the event will not occur at this date
      */
-    public void addException(LocalDate date){
+    public void addException(LocalDate date) {
         lesExceptions.add(date);
     }
 
@@ -43,7 +44,37 @@ public class RepetitiveEvent extends Event {
      * @return the type of repetition
      */
     public ChronoUnit getFrequency() {
-        return frequency;  
+        return frequency;
+    }
+
+
+    public boolean isInDay(LocalDate aDay) {
+
+        boolean ret = false;
+
+        if (!lesExceptions.contains(aDay)) {
+
+            if (frequency == ChronoUnit.DAYS && (this.getStart().toLocalDate().equals(aDay) || this.getStart().toLocalDate().isBefore(aDay))) {
+                ret = true;
+            }
+
+            if (frequency == ChronoUnit.WEEKS) {
+                for (int i = 0; i < 53; i++) {
+                    if (this.getStart().toLocalDate().plus(i, ChronoUnit.WEEKS).equals(aDay)) {
+                        ret = true;
+                    }
+                }
+            }
+
+            if (frequency == ChronoUnit.MONTHS) {
+                for (int i = 0; i < 12; i++) {
+                    if (this.getStart().toLocalDate().plus(i, ChronoUnit.MONTHS).equals(aDay)) {
+                        ret = true;
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
 }

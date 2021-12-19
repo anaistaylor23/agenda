@@ -9,7 +9,6 @@ public class Event {
     private final String myTitle;
     private final LocalDateTime myStart;
     private final Duration myDuration;
-    private ArrayList<Event> listeEvents;
 
     public Event(String title, LocalDateTime start, Duration duration) {
         this.myTitle = title;
@@ -24,10 +23,10 @@ public class Event {
      * @return true if the event occurs on that day, false otherwise
      */
     public boolean isInDay(LocalDate aDay) {
-        boolean ret = false;
+        boolean ret = true;
         LocalDateTime myEnd = myStart.plus(myDuration);
-        if (aDay.isAfter(myStart.toLocalDate()) && aDay.isBefore(myEnd.toLocalDate())) {
-            ret = true;
+        if (aDay.isBefore(myStart.toLocalDate()) || aDay.isAfter(myEnd.toLocalDate())) {
+            ret = false;
         }
         return ret;
     }
@@ -51,6 +50,11 @@ public class Event {
      */
     public Duration getDuration() {
         return myDuration;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" + "myTitle=" + myTitle + '}';
     }
 
 }

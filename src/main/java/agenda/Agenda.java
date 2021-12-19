@@ -13,7 +13,7 @@ public class Agenda {
      *
      * @param e the event to add
      */
-    private Set<Event> myEvents;
+    private Set<Event> myEvents = new HashSet<>();
 
     public void addEvent(Event e) {
         myEvents.add(e);
@@ -26,13 +26,13 @@ public class Agenda {
      * @return and iteraror to the events that occur on that day
      */
     public Set<Event> eventsInDay(LocalDate day) {
-        Set<Event> EventDay = null;
+        Set<Event> EventDay = new HashSet<>();
         for (Event e : myEvents) {
             if (e.isInDay(day)) {
                 EventDay.add(e);
             }
-            
+
         }
-    return EventDay;
+        return EventDay;
     }
 }
